@@ -87,7 +87,7 @@ public class CameraManager {
 	
 	public void setRecordingSimultaneous(List<Camera> cams, boolean state) throws IOException {
 		List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(cams.size());
-		for (Camera c : _cameras) {
+		for (Camera c : cams) {
 			tasks.add(new Callable<Boolean>() {
 				@Override
 				public Boolean call() throws IOException {
