@@ -1,5 +1,7 @@
 # JVC MultiRemote
 
+![Screenshot](https://raw.githubusercontent.com/StefanKrupop/JvcMultiRemote/master/screenshot.png)
+
 The JVC MultiRemote is a small utility to "simultaneously" start/stop recording on multiple JVC cameras that support JVC’s REST API (https://www3.jvckenwood.com/pro/video/web-api/pdf/JvcCamcorderApiReferenceV107_public.pdf), e.g. the GY-HC500E.
 
 ## Usage

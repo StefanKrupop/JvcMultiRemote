@@ -46,7 +46,6 @@ public class JvcMultiRemote extends JFrame {
 			if (icon == null) {
 				icon = new File("icon.png").getCanonicalFile().toURI().toURL();
 			}
-			System.out.println("URL: " + icon);
 			this.setIconImage(ImageIO.read(icon));
 		} catch (IOException e) {
 		}
