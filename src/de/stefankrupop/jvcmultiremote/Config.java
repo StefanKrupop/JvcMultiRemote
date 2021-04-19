@@ -27,10 +27,14 @@ public final class Config {
 		String jarDir = "";
 		try {
 			CodeSource codeSource = JvcMultiRemote.class.getProtectionDomain().getCodeSource();
-			File jarFile = new File(codeSource.getLocation().toURI().getPath());
-			jarDir = jarFile.getParentFile().getPath();
-			if (!jarDir.isEmpty()) {
-				jarDir += "/";
+			if (codeSource.getLocation().toURI().toString().startsWith("rsrc:")) {
+				jarDir = codeSource.getLocation().toURI().toString().replace("rsrc:", "");
+			} else {
+				File jarFile = new File(codeSource.getLocation().toURI().getPath());
+				jarDir = jarFile.getParentFile().getPath();
+				if (!jarDir.isEmpty()) {
+					jarDir += "/";
+				}
 			}
 		} catch (URISyntaxException e) {
 			// Should not happen, ignore

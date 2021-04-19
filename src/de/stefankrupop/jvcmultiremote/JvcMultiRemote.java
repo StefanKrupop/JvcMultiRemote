@@ -3,8 +3,11 @@ package de.stefankrupop.jvcmultiremote;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -38,6 +41,16 @@ public class JvcMultiRemote extends JFrame {
 		this.setLocation(Config.getPropertyInt("windowX", 0), Config.getPropertyInt("windowY", 0));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		try {
+			URL icon = ClassLoader.getSystemResource("icon.png");
+			if (icon == null) {
+				icon = new File("icon.png").getCanonicalFile().toURI().toURL();
+			}
+			System.out.println("URL: " + icon);
+			this.setIconImage(ImageIO.read(icon));
+		} catch (IOException e) {
+		}
+
 		this.setLayout(new BorderLayout());
 		
 		_lstCameras = new JList<Camera>(_cameraManager.getCameras().toArray(new Camera[0]));
