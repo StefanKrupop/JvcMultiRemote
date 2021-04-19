@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.albroco.barebonesdigest.DigestAuthentication;
 import com.albroco.barebonesdigest.DigestChallengeResponse;
 
@@ -19,6 +22,8 @@ public class Camera {
 	private String _password;
 	private boolean _isAuthenticated;
 	private String _sessionId;
+
+	private final Logger _logger = LoggerFactory.getLogger(Camera.class);
 	
 	public Camera(String name, String ipAddress, String username, String password) {
 		_name = name;
@@ -34,7 +39,7 @@ public class Camera {
 	}
 	
 	public boolean connect() throws IOException {
-		System.out.println("Connecting to camera " + this.toString() + "...");
+		_logger.info("Connecting to camera " + this.toString() + "...");
 		URL url = new URL("http://" + _ipAddress + LOGIN_URL);
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setRequestMethod("GET");
@@ -74,7 +79,7 @@ public class Camera {
 		_sessionId = cookie.replace("SessionID=", "");
 		_isAuthenticated = true;
 
-		System.out.println("Connected successfully");
+		_logger.info("Connected successfully");
 		
 		return true;
 	}
@@ -90,8 +95,8 @@ public class Camera {
 	
 	private String sendCmd(String cmd, String params) throws IOException {
 		if (!_isAuthenticated) connect();
-		
-		System.out.println("Sending command '" + cmd + "' to camera " + this.toString() + "...");
+
+		_logger.debug("Sending command '" + cmd + "' to camera " + this.toString() + "...");
 		
 		URL url = new URL("http://" + _ipAddress + CMD_URL);
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -132,7 +137,7 @@ public class Camera {
 		}
 		in.close();
 		
-		System.out.println("Sent successfully");
+		_logger.debug("Sent successfully");
 		return content.toString();
 	}
 	

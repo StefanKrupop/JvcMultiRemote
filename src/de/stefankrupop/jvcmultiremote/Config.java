@@ -13,11 +13,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class Config {
 	private static final Path PROPERTIES_FILENAME;
 	private final Properties mProperties;
 	private static Config mInstance;
 
+	private static final Logger _logger = LoggerFactory.getLogger(Camera.class);
+	
 	static {
 		String jarDir = "";
 		try {
@@ -55,7 +60,7 @@ public final class Config {
 			mProperties.load(is);
 			is.close();
 		} catch (IOException e) {
-			System.err.println("Could not open/parse settings file " + e);
+			_logger.error("Could not open/parse settings file " + e);
 		}		
 	}
 	
@@ -74,7 +79,7 @@ public final class Config {
 				throw e;
 			}
 			catch (Exception e) {
-				System.err.println("Could not store user-defined value " + key + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
+				_logger.error("Could not store user-defined value " + key + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
 			}
 		}
 	}
@@ -88,7 +93,7 @@ public final class Config {
 		try {
 			ret = Integer.parseInt(getProperty(key, Integer.toString(defaultValue)).trim());
 		} catch (NumberFormatException e) {
-			System.err.println("Could not read Integer value " + key + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
+			_logger.error("Could not read Integer value " + key + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
 		}
 		return ret;
 	}
@@ -98,7 +103,7 @@ public final class Config {
 		try {
 			ret = Double.parseDouble(getProperty(key, Double.toString(defaultValue)).trim());
 		} catch (NumberFormatException e) {
-			System.err.println("Could not read Double value " + key  + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
+			_logger.error("Could not read Double value " + key  + " in settings file " + PROPERTIES_FILENAME + "! (" + e.getMessage() + ")");
 		}
 		return ret;
 	}

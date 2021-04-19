@@ -17,11 +17,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CameraManager {
 	private static final Path CAMERAS_FILENAME;
 	
 	private final List<Camera> _cameras;
 	private final ExecutorService _simultaneousExecutors;
+
+	private final Logger _logger = LoggerFactory.getLogger(CameraManager.class);
 	
 	static {
 		String jarDir = "";
@@ -62,14 +67,14 @@ public class CameraManager {
 						Camera cam = new Camera(parts[0], parts[1], parts[2], parts[3]);
 						cams.add(cam);
 					} else {
-						System.err.println("Invalid formatting in line " + lineNr + ": Expected four parts separated by comma");
+						_logger.error("Invalid formatting in line " + lineNr + ": Expected four parts separated by comma");
 					}
 				}
 				lineNr++;
 			}
 			_cameras.clear();
 			_cameras.addAll(cams);
-			System.out.println("Initialized " + cams.size() + " cameras");
+			_logger.info("Initialized " + cams.size() + " cameras");
 		} catch (IOException e) {
 			throw new IOException("Could not read cameras file: " + e.toString());
 		}
