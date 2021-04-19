@@ -54,12 +54,14 @@ public class JvcMultiRemote extends JFrame {
 					@Override
 					public Void doInBackground() {
 						_cmdRecord.setEnabled(false);
+						_cmdStop.setEnabled(false);
 						try {
 							_cameraManager.setRecordingSimultaneous(_lstCameras.getSelectedValuesList(), true);
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(JvcMultiRemote.this, "Could not execute command: " + e.toString(), "Executing command failed", JOptionPane.ERROR_MESSAGE);
 						}
 						_cmdRecord.setEnabled(true);
+						_cmdStop.setEnabled(true);
 						return null;
 					}
 				};
@@ -74,12 +76,14 @@ public class JvcMultiRemote extends JFrame {
 					@Override
 					public Void doInBackground() {
 						_cmdStop.setEnabled(false);
+						_cmdRecord.setEnabled(false);
 						try {
 							_cameraManager.setRecordingSimultaneous(_lstCameras.getSelectedValuesList(), false);
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(JvcMultiRemote.this, "Could not execute command: " + e.toString(), "Executing command failed", JOptionPane.ERROR_MESSAGE);
 						}
 						_cmdStop.setEnabled(true);
+						_cmdRecord.setEnabled(true);
 						return null;
 					}
 				};
@@ -147,12 +151,16 @@ public class JvcMultiRemote extends JFrame {
 			@Override
 			public Void doInBackground() {
 				_lstCameras.setEnabled(false);
+				_cmdRecord.setEnabled(false);
+				_cmdStop.setEnabled(false);
 				try {
 					_cameraManager.connectAllCameras();
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(JvcMultiRemote.this, "Could not connect to cameras: " + e.toString(), "Camera connection failed", JOptionPane.ERROR_MESSAGE);
 				}
 				_lstCameras.setEnabled(true);
+				_cmdRecord.setEnabled(true);
+				_cmdStop.setEnabled(true);
 				return null;
 			}
 		};
