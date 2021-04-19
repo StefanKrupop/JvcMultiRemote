@@ -12,9 +12,13 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+
+import com.tulskiy.keymaster.common.HotKey;
+import com.tulskiy.keymaster.common.HotKeyListener;
 
 public class JvcMultiRemote extends JFrame {
 	private static final long serialVersionUID = -8908451151977084899L;
@@ -24,11 +28,13 @@ public class JvcMultiRemote extends JFrame {
 	private final JButton _cmdRecord;
 	private final JButton _cmdStop;
 	private final JCheckBox _chkAlwaysOnTop;
+	private final JCheckBox _chkHotkeys;
+	private com.tulskiy.keymaster.common.Provider _hotkeyProvider = null;
 	
 	public JvcMultiRemote(CameraManager mgr) {
 		_cameraManager = mgr;
 		this.setTitle("JVC MultiRemote");
-		this.setSize(Config.getPropertyInt("windowWidth", 300), Config.getPropertyInt("windowHeight", 122));
+		this.setSize(Config.getPropertyInt("windowWidth", 350), Config.getPropertyInt("windowHeight", 122));
 		this.setLocation(Config.getPropertyInt("windowX", 0), Config.getPropertyInt("windowY", 0));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -87,15 +93,54 @@ public class JvcMultiRemote extends JFrame {
 				JvcMultiRemote.this.setAlwaysOnTop(_chkAlwaysOnTop.isSelected());
 			}
 		});
+
+		_chkHotkeys = new JCheckBox("Global hotkeys");
+		_chkHotkeys.setToolTipText("Record: " + Config.getProperty("globalHotkeyRecord", "ctrl alt R") + " - Stop: " + Config.getProperty("globalHotkeyStop", "ctrl alt S"));
+		_chkHotkeys.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (_chkHotkeys.isSelected()) {
+					if (_hotkeyProvider == null) {
+						_hotkeyProvider = com.tulskiy.keymaster.common.Provider.getCurrentProvider(true);
+						if (_hotkeyProvider == null) {
+							JOptionPane.showMessageDialog(null, "Could not get hotkey provider", "Global hotkeys error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+
+					_hotkeyProvider.register(KeyStroke.getKeyStroke(Config.getProperty("globalHotkeyRecord", "ctrl alt R")), new HotKeyListener() {
+						@Override
+						public void onHotKey(HotKey arg0) {
+							_cmdRecord.doClick();
+						}
+					});
+					_hotkeyProvider.register(KeyStroke.getKeyStroke(Config.getProperty("globalHotkeyStop", "ctrl alt S")), new HotKeyListener() {
+						@Override
+						public void onHotKey(HotKey arg0) {
+							_cmdStop.doClick();
+						}
+					});
+				} else {
+					if (_hotkeyProvider != null) {
+						_hotkeyProvider.reset();
+						_hotkeyProvider.stop();
+						_hotkeyProvider = null;
+					}
+				}
+			}
+		});
 		
 		JPanel buttons = new JPanel();
 		buttons.add(_cmdRecord);
 		buttons.add(_cmdStop);
 		buttons.add(_chkAlwaysOnTop);
+		buttons.add(_chkHotkeys);
 		this.add(buttons, BorderLayout.SOUTH);
 		
 		_chkAlwaysOnTop.setSelected(!Config.getPropertyBool("alwaysOnTop", false));
 		_chkAlwaysOnTop.doClick();
+		_chkHotkeys.setSelected(!Config.getPropertyBool("enableGlobalHotkeys", false));
+		_chkHotkeys.doClick();
 		
 		this.setVisible(true);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -121,6 +166,12 @@ public class JvcMultiRemote extends JFrame {
 		Config.setProperty("windowX", this.getLocation().x);
 		Config.setProperty("windowY", this.getLocation().y);
 		Config.setProperty("alwaysOnTop", _chkAlwaysOnTop.isSelected());
+		Config.setProperty("enableGlobalHotkeys", _chkHotkeys.isSelected());
+		if (_hotkeyProvider != null) {
+			_hotkeyProvider.reset();
+			_hotkeyProvider.stop();
+			_hotkeyProvider = null;
+		}
 	    super.dispose();
 	    System.exit(0);
 	}
