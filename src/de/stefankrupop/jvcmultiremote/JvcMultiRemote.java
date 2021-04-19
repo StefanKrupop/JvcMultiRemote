@@ -15,8 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class JvcMultiRemote extends JFrame {
 	private static final long serialVersionUID = -8908451151977084899L;
@@ -38,7 +36,7 @@ public class JvcMultiRemote extends JFrame {
 		
 		_lstCameras = new JList<Camera>(_cameraManager.getCameras().toArray(new Camera[0]));
 		_lstCameras.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		_lstCameras.addSelectionInterval(0, _cameraManager.getCameras().size());
+		_lstCameras.addSelectionInterval(0, _cameraManager.getCameras().size() - 1);
 		JScrollPane lstCamerasScroll = new JScrollPane(_lstCameras);
 		this.add(lstCamerasScroll, BorderLayout.CENTER);
 		
@@ -83,9 +81,9 @@ public class JvcMultiRemote extends JFrame {
 			}
 		});
 		_chkAlwaysOnTop = new JCheckBox("Always on top");
-		_chkAlwaysOnTop.addChangeListener(new ChangeListener() {
+		_chkAlwaysOnTop.addActionListener(new ActionListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				JvcMultiRemote.this.setAlwaysOnTop(_chkAlwaysOnTop.isSelected());
 			}
 		});
@@ -96,7 +94,8 @@ public class JvcMultiRemote extends JFrame {
 		buttons.add(_chkAlwaysOnTop);
 		this.add(buttons, BorderLayout.SOUTH);
 		
-		_chkAlwaysOnTop.setSelected(Config.getPropertyBool("alwaysOnTop", false));
+		_chkAlwaysOnTop.setSelected(!Config.getPropertyBool("alwaysOnTop", false));
+		_chkAlwaysOnTop.doClick();
 		
 		this.setVisible(true);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
