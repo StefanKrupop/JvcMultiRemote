@@ -1,6 +1,7 @@
 package de.stefankrupop.jvcmultiremote;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -37,7 +38,7 @@ public class JvcMultiRemote extends JFrame {
 	public JvcMultiRemote(CameraManager mgr) {
 		_cameraManager = mgr;
 		this.setTitle("JVC MultiRemote");
-		this.setSize(Config.getPropertyInt("windowWidth", 350), Config.getPropertyInt("windowHeight", 122));
+		this.setSize(Config.getPropertyInt("windowWidth", 400), Config.getPropertyInt("windowHeight", 131));
 		this.setLocation(Config.getPropertyInt("windowX", 0), Config.getPropertyInt("windowY", 0));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -59,6 +60,7 @@ public class JvcMultiRemote extends JFrame {
 		this.add(lstCamerasScroll, BorderLayout.CENTER);
 		
 		_cmdRecord = new JButton("Record");
+		_cmdRecord.setPreferredSize(new Dimension(80, 32));
 		_cmdRecord.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -81,6 +83,7 @@ public class JvcMultiRemote extends JFrame {
 			}
 		});
 		_cmdStop = new JButton("Stop");
+		_cmdStop.setPreferredSize(new Dimension(80, 32));
 		_cmdStop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
